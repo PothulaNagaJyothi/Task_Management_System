@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, CheckSquare, Sun, Moon, LayoutDashboard, Menu, X } from 'lucide-react';
+import ConfirmModal from './ConfirmModal';
 
 const Navbar = ({ darkMode, toggleTheme }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -68,10 +70,22 @@ const Navbar = ({ darkMode, toggleTheme }) => {
           {darkMode ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
-        <button onClick={() => { logout(); closeMenu(); }} className="btn btn-danger">
+        <button onClick={() => { setIsLogoutModalOpen(true); closeMenu(); }} className="btn btn-danger">
           <LogOut size={18} /> Logout
         </button>
       </div>
+
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={() => {
+          setIsLogoutModalOpen(false);
+          logout();
+        }}
+        title="Confirm Logout"
+        message="Are you sure you want to log out?"
+        confirmText="Logout"
+      />
     </nav>
   );
 };
