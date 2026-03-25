@@ -1,49 +1,24 @@
 # Task Management System - Frontend
 
-This is the frontend application for the Task Management System, built with **React**, **Vite**, and **React Router**.
+This is the UI layer for the Task Management System, serving as an interactive Single Page Application built rapidly via **React** and **Vite**.
 
-## Features
-- **Task Management Interface:** Create, update, and manage your tasks.
-- **Analytics/Charts:** Uses recharts for data visualization.
-- **Icons:** Uses lucide-react for elegant iconography.
-- **Fast Development:** Powered by Vite for lightning-fast HMR.
+## 📁 Architecture & Refactoring
 
-## Prerequisites
-- Node.js (v18 or higher recommended)
-- npm or yarn
+The codebase follows a strictly organized directory map ensuring maximum reusability and clean states:
+- `/src/components`: Independent interface fragments like `TaskModal` and `ConfirmModal`.
+- `/src/pages`: Distinct page outlines like the `Dashboard` and the main `Tasks` view.
+- `/src/services`: Decoupled wrappers handling `getAnalyticsCall` and `getTasksCall`, entirely isolating DOM logic from Axios logic.
+- `/src/api/axios.js`: The central Axios instance controlling baseline baseURL proxies and dynamic Header injection.
+- `/src/context`: Provider wrappers sharing live User and Authentication status down the React tree.
 
-## Installation
+## ✨ Highlights
+- **Service Abstraction Layer:** By migrating API calls to `src/services`, components remain strictly presentation-focused.
+- **Graphical Dashboard:** Recharts generates dynamic SVGs illustrating "Completed", "Pending", and "Overdue" task breakdowns.
+- **Live Filtering and Badging:** React state seamlessly cascades custom highlighting, alerting users instantly when a Task turns "Overdue" based on midnight thresholds.
+- **Prominent Pagination Logic:** Secured edge-cases to gracefully fade out navigation buttons preventing out-of-bounds page requests while keeping UI completely understandable.
 
-1. Clone the repository and navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+## 💻 Running Locally
+- `npm install` installs libraries (React Router, Lucide, Recharts)
+- `npm run dev` boots the Hot Module Replacement server via Vite on `http://localhost:3000`.
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm run dev`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-### `npm run preview`
-
-Locally preview the production build after running `npm run build`.
-
-## Integration
-
-The frontend proxies API requests under `/api` to the backend server running at `http://localhost:5000` during development (configured in `vite.config.js`). Ensure the backend is running concurrently for full functionality.
+**Note:** Vite uses an integrated `/api` proxy under `vite.config.js` pointing towards `http://localhost:5000` to magically sidestep standard browser CORS issues during local development. Ensure the backend exists concurrently.

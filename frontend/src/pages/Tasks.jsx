@@ -196,7 +196,11 @@ const Tasks = () => {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '1.5rem' }}>
               {tasks.map(task => {
-                const isOverdue = task.status !== 'Done' && task.dueDate && new Date(task.dueDate) < new Date();
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const taskDate = task.dueDate ? new Date(task.dueDate) : null;
+                if (taskDate) taskDate.setHours(0, 0, 0, 0);
+                const isOverdue = task.status !== 'Done' && taskDate && taskDate < today;
                 return (
                 <div key={task._id} className={`task-card priority-${task.priority} ${task.status === 'Done' ? 'status-done' : ''} ${isOverdue ? 'status-overdue' : ''}`} style={isOverdue ? { borderColor: 'var(--danger-color)', boxShadow: '0 0 10px rgba(239, 68, 68, 0.1)' } : {}}>
                   <div className="task-header">
@@ -248,17 +252,17 @@ const Tasks = () => {
           {tasks.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '3rem' }}>
               <button
-                className="btn btn-secondary"
+                className="btn btn-primary"
                 onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
+                disabled={page <= 1}
               >
                 <ChevronLeft size={18} /> Prev
               </button>
-              <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Page {page} of {totalPages}</span>
+              <span style={{ fontSize: '1rem', fontWeight: '600', color: 'var(--text-primary)' }}>Page {page} of {totalPages || 1}</span>
               <button
-                className="btn btn-secondary"
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
+                className="btn btn-primary"
+                onClick={() => setPage(p => Math.min(Math.max(1, totalPages), p + 1))}
+                disabled={page >= totalPages || totalPages === 0}
               >
                 Next <ChevronRight size={18} />
               </button>

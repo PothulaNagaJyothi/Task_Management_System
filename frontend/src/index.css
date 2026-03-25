@@ -130,7 +130,14 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-.btn-primary:hover {
+.btn:disabled, .btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  /* pointer-events: none; removed to allow cursor icon to show */
+  transform: none !important;
+}
+
+.btn-primary:hover:not(:disabled) {
   background-color: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
@@ -142,7 +149,7 @@ body {
   border: 1px solid var(--border-color);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background-color: var(--surface-color);
   border-color: var(--text-secondary);
 }

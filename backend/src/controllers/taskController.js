@@ -33,8 +33,9 @@ const getAnalytics = async (req, res, next) => {
     const pending = total - completed;
     
     // Add overdue logic
-    const now = new Date();
-    const overdue = tasks.filter(t => t.status !== 'Done' && t.dueDate && new Date(t.dueDate) < now).length;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const overdue = tasks.filter(t => t.status !== 'Done' && t.dueDate && new Date(t.dueDate) < today).length;
 
     const completionPercentage = total === 0 ? 0 : Math.round((completed / total) * 100);
 
@@ -57,8 +58,10 @@ const getTasks = async (req, res, next) => {
     let query = { user: new mongoose.Types.ObjectId(req.user._id || req.user) };
 
     if (status === 'Overdue') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
       query.status = { $ne: 'Done' };
-      query.dueDate = { $lt: new Date() };
+      query.dueDate = { $lt: today };
     } else if (status) {
       query.status = status;
     }
