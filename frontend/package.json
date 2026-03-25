@@ -1,7 +1,9 @@
 {
-  "name": "frontend",
+  "name": "task-management-frontend",
+  "author": "Pothula Naga Jyothi",
+  "description": "React frontend for my Task Management System",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

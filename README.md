@@ -87,7 +87,7 @@ To run this project locally, follow these steps.
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/Task_Management_System.git
+git clone https://github.com/PothulaNagaJyothi/Task_Management_System.git
 cd Task_Management_System
 ```
 
@@ -121,6 +121,16 @@ npm run dev
 
 ---
 
+## 🧠 What I Learned
+
+Building this MERN stack assignment taught me a lot about connecting a React frontend to a Node.js backend. Here are a few key things I learned along the way:
+
+- **Handling Logins:** Figuring out how to keep a user logged in after they refresh the page was tricky! I learned how to use JSON Web Tokens (JWT) and save them in the browser's `localStorage` so the user doesn't have to keep re-typing their password.
+- **Working with MongoDB Queries:** When adding the "Overdue" feature, I initially wasn't sure how to filter the dates. Instead of returning all tasks and filtering them in React, I learned how to write better MongoDB queries using `$lt` and `$ne` to filter out tasks where the due date has already passed right at the database level.
+- **Keeping Code Organized:** As the project grew, having all the API routes and database logic in one file became really confusing. I learned the value of refactoring by splitting the code into different folders (like `controllers` for the logic and `routes` for the URLs), which made it way easier to read, debug, and understand.
+
+---
+
 ## 📡 API Endpoints Overview
 
 The backend exposes a highly functional REST API wrapped in `/api`.
@@ -142,5 +152,8 @@ The backend exposes a highly functional REST API wrapped in `/api`.
 | `DELETE`| `/:id` | Delete a task |
 
 ---
+
+## 👨‍💻 Author
+**Pothula Naga Jyothi**
 
 *Engineered thoughtfully with React, Express, and MongoDB.*
