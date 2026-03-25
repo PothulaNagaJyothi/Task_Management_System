@@ -23,6 +23,24 @@ This application provides a seamless way for users to create, track, manage, and
 
 ---
 
+## 🎨 Design Decisions
+
+As an enterprise-grade full-stack application, several architectural design choices were made to ensure scalability, security, and developer experience:
+
+1. **Layered Services Architecture:** 
+   The application strictly separates Routing from Business Logic on the backend (Controllers), and UI Rendering from API Fetching on the frontend (Services). This decoupled approach allows components to remain cohesive and highly testable.
+   
+2. **Stateless Authentication (JWT):** 
+   Chosen over traditional session cookies to allow the API to remain stateless. This makes horizontal scaling easier and is perfect for serving multiple clients (like a future Mobile App) separated from the server state without CSRF vulnerability concerns.
+
+3. **Advanced Database Aggregations for Filtering/Sorting:** 
+   Instead of pulling all tasks into Node.js memory and filtering arrays, searching, sorting, formatting, and pagination are handled directly at the database level using highly efficient MongoDB Aggregation Pipelines. For example, sorting by priority uses custom dynamic weight mapping (High=3, Medium=2, Low=1) within the MongoDB query.
+
+4. **Proxy Configuration for Local Dev:** 
+   Vite is configured to proxy `/api` requests directly to `http://localhost:5000`. This completely circumvents complex CORS handling and pre-flight request issues during local development, mimicking a production reverse-proxy environment.
+
+---
+
 ## 🏗️ Architecture & Folder Structure
 
 This project follows an industry-standard, scalable architecture separating concerns into a React Single Page Application frontend and a layered RESTful Node.js backend.
