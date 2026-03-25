@@ -1,5 +1,7 @@
 # Task Management System - Frontend
 
+🚀 **Live Deployment:** [https://task-management-system-one-jade.vercel.app/](https://task-management-system-one-jade.vercel.app/)
+
 This is the UI layer for the Task Management System, serving as an interactive Single Page Application built rapidly via **React** and **Vite**.
 
 ## 📁 Architecture & Refactoring

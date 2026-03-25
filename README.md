@@ -6,6 +6,12 @@ This application provides a seamless way for users to create, track, manage, and
 
 ---
 
+## 🌍 Live Demo
+- **Live Frontend App:** [https://task-management-system-one-jade.vercel.app/](https://task-management-system-one-jade.vercel.app/)
+- **Live Backend API:** [https://task-management-system-yin1.onrender.com](https://task-management-system-yin1.onrender.com)
+
+---
+
 ## 🎯 Important Links
 - [Frontend Documentation](./frontend/README.md)
 - [Backend Documentation](./backend/README.md)
