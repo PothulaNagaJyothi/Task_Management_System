@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getAnalyticsCall } from '../services/taskService';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
-import { CheckCircle2, CircleDashed, ListTodo, Activity } from 'lucide-react';
+import { CheckCircle2, CircleDashed, ListTodo, Activity, Clock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0, completionPercentage: 0 });
+  const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0, overdue: 0, completionPercentage: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
@@ -17,8 +17,8 @@ const Dashboard = () => {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('/api/tasks/analytics');
-      setStats(res.data);
+      const data = await getAnalyticsCall();
+      setStats(data);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load analytics');
@@ -32,8 +32,9 @@ const Dashboard = () => {
 
   const chartData = [
     { name: 'Completed', value: stats.completed, color: '#10b981' },
-    { name: 'Pending', value: stats.pending, color: '#f59e0b' }
-  ];
+    { name: 'Pending', value: stats.pending, color: '#3b82f6' },
+    { name: 'Overdue', value: stats.overdue, color: '#ef4444' }
+  ].filter(item => item.value > 0);
 
   return (
     <div>
@@ -80,6 +81,15 @@ const Dashboard = () => {
           <div className="stat-content">
             <h3>Completion</h3>
             <p>{stats.completionPercentage}%</p>
+          </div>
+        </div>
+        <div className="glass-panel stat-card">
+          <div className="stat-icon" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger-color)' }}>
+            <Clock size={24} />
+          </div>
+          <div className="stat-content">
+            <h3>Overdue</h3>
+            <p>{stats.overdue}</p>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getTasksCall, createTaskCall, updateTaskCall, deleteTaskCall, completeTaskCall } from '../services/taskService';
 import { Plus, Search, Filter, Edit2, Trash2, CheckCircle, ChevronLeft, ChevronRight, Check, Circle } from 'lucide-react';
 import TaskModal from '../components/TaskModal';
 import ConfirmModal from '../components/ConfirmModal';
@@ -37,19 +37,17 @@ const Tasks = () => {
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('/api/tasks', {
-        params: {
-          page,
-          limit: 9, // 9 items per page fits well in a grid
-          status: statusFilter || undefined,
-          priority: priorityFilter || undefined,
-          search: searchQuery || undefined,
-          sortBy,
-          order
-        }
+      const data = await getTasksCall({
+        page,
+        limit: 9,
+        status: statusFilter || undefined,
+        priority: priorityFilter || undefined,
+        search: searchQuery || undefined,
+        sortBy,
+        order
       });
-      setTasks(res.data.tasks);
-      setTotalPages(res.data.totalPages);
+      setTasks(data.tasks);
+      setTotalPages(data.totalPages);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch tasks');
@@ -61,7 +59,7 @@ const Tasks = () => {
   const handleCreateTask = async (taskData) => {
     try {
       setActionLoading(true);
-      await axios.post('/api/tasks', taskData);
+      await createTaskCall(taskData);
       setIsModalOpen(false);
       fetchTasks();
     } catch (err) {
@@ -74,7 +72,7 @@ const Tasks = () => {
   const handleUpdateTask = async (taskData) => {
     try {
       setActionLoading(true);
-      await axios.patch(`/api/tasks/${editingTask._id}`, taskData);
+      await updateTaskCall(editingTask._id, taskData);
       setIsModalOpen(false);
       setEditingTask(null);
       fetchTasks();
@@ -94,7 +92,7 @@ const Tasks = () => {
     if (!taskToDelete) return;
     try {
       setActionLoading(true);
-      await axios.delete(`/api/tasks/${taskToDelete}`);
+      await deleteTaskCall(taskToDelete);
       setIsConfirmOpen(false);
       setTaskToDelete(null);
       fetchTasks();
@@ -107,7 +105,7 @@ const Tasks = () => {
 
   const handleMarkComplete = async (id) => {
     try {
-      await axios.patch(`/api/tasks/${id}/complete`);
+      await completeTaskCall(id);
       fetchTasks();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to complete task');
@@ -157,6 +155,7 @@ const Tasks = () => {
             <option value="Todo">Todo</option>
             <option value="In Progress">In Progress</option>
             <option value="Done">Done</option>
+            <option value="Overdue">Overdue</option>
           </select>
 
           <select id="priorityFilter" name="priorityFilter" className="input-field" style={{ width: 'auto' }} value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)}>
@@ -196,8 +195,10 @@ const Tasks = () => {
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '1.5rem' }}>
-              {tasks.map(task => (
-                <div key={task._id} className={`task-card priority-${task.priority} ${task.status === 'Done' ? 'status-done' : ''}`}>
+              {tasks.map(task => {
+                const isOverdue = task.status !== 'Done' && task.dueDate && new Date(task.dueDate) < new Date();
+                return (
+                <div key={task._id} className={`task-card priority-${task.priority} ${task.status === 'Done' ? 'status-done' : ''} ${isOverdue ? 'status-overdue' : ''}`} style={isOverdue ? { borderColor: 'var(--danger-color)', boxShadow: '0 0 10px rgba(239, 68, 68, 0.1)' } : {}}>
                   <div className="task-header">
                     <span className={`badge badge-${task.status.toLowerCase().replace(' ', '')}`}>
                       {task.status}
@@ -237,14 +238,14 @@ const Tasks = () => {
 
                   <div className="task-footer">
                     <span>Priority: <span style={{ fontWeight: '700' }} className={`priority-text-${task.priority}`}>{task.priority}</span></span>
-                    {task.dueDate && <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>}
+                    {task.dueDate && <span style={{ color: isOverdue ? 'var(--danger-color)' : 'inherit', fontWeight: isOverdue ? '600' : 'normal' }}>{isOverdue ? 'Overdue: ' : 'Due: '}{new Date(task.dueDate).toLocaleDateString()}</span>}
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           )}
 
-          {totalPages > 1 && (
+          {tasks.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '3rem' }}>
               <button
                 className="btn btn-secondary"
